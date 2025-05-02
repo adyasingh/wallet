@@ -56,7 +56,7 @@ Approximately one-third of the project development time was dedicated to writing
    > go test ./...
    ```
 
-## Scope 
+## Improvements 
 
 This project implements API business logic effectively. To make it production-ready, consider the following enhancements:
 
@@ -74,7 +74,9 @@ This project implements API business logic effectively. To make it production-re
 
 - **Cleaner data seeding:** The fixtures can be migrated to an alternate endpoint or sql file for a cleaner main.go
 
-- **Extended database:** Enhance the database schemas and names for tracking and feature extension.
+- **Extended database:**  Improve the database schemas and naming conventions to facilitate better tracking and future feature expansions.
+
+- **Comprehensive testing:** Expand test coverage to include additional edge cases, utilizing a database singleton and transactions for more reliable and isolated test execution.
 
 There are, of course, several extensions to the current features that would add significant value and prepare this project for production. These include, but are not limited to:
 Frontend pages
