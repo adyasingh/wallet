@@ -11,7 +11,6 @@ import (
 
 func TestUserRepository_Save(t *testing.T) {
 	db, _, _, userRepo := utils.SetupTestDB()
-
 	user := models.User{Name: "Test User"}
 	userId, err := userRepo.Save(user)
 	assert.NoError(t, err)

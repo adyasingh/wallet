@@ -21,10 +21,10 @@ func TestGetTransactionsHandler(t *testing.T) {
 	r := gin.Default()
 	r.GET("/wallet/:id/transactions", walletHandler.GetTransactionsHandler)
 
-	userID, _ := userRepo.Save(models.User{Name: "Test User"})
-
-	walletID, _ := walletRepo.Save(models.Wallet{Balance: 100.0, UserID: userID})
-
+	userID, err := userRepo.Save(models.User{Name: "Test User"})
+	assert.NoError(t, err)
+	walletID, err := walletRepo.Save(models.Wallet{Balance: 100.0, UserID: userID})
+	assert.NoError(t, err)
 	transactionRepo.Save(models.Transaction{WalletID: walletID, Amount: 50.0, Type: "deposit"})
 	transactionRepo.Save(models.Transaction{WalletID: walletID, Amount: 20.0, Type: "withdrawal"})
 
@@ -56,7 +56,8 @@ func TestGetTransactionsHandler(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			req, _ := http.NewRequest(http.MethodGet, "/wallet/"+tt.walletID+"/transactions", nil)
+			req, err := http.NewRequest(http.MethodGet, "/wallet/"+tt.walletID+"/transactions", nil)
+			assert.NoError(t, err)
 			resp := httptest.NewRecorder()
 
 			r.ServeHTTP(resp, req)

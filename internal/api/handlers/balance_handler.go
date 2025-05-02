@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 	"wallet-app/internal/errors"
@@ -12,7 +11,6 @@ import (
 func (c *WalletHandler) GetBalanceHandler(ctx *gin.Context) {
 	walletID, err := strconv.Atoi(ctx.Param("id"))
 	if err != nil {
-		fmt.Println(err)
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": "invalid wallet id"})
 		return
 	}

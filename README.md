@@ -13,7 +13,7 @@ The Wallet Management System is a RESTful API that allows users to manage their 
 
 ## Getting Started
 
-This application is dockerised and ready with some seeded data for users and wallets.
+This application is dockerised and ready with some seeded data containing 2 users and wallets.
 
 ### Prerequisites
 - Docker: https://www.docker.com/products/docker-desktop/
@@ -28,7 +28,7 @@ This application is dockerised and ready with some seeded data for users and wal
 
 2. Build and run docker images:
    ```
-   > docker-compose up -d
+   > docker-compose up -d --build
    ```
 
 ### Calling APIs
@@ -71,6 +71,19 @@ This project implements API business logic effectively. To make it production-re
 - **Deployments and Environments:** Establish a streamlined deployment process, including CI/CD pipelines, to facilitate smooth transitions between development, staging, and production environments.
 
 - **Enhanced API Response Data:** Improve the API responses by including metadata and additional context where necessary. This can enhance the usability of the API for clients.
+
+- **Cleaner data seeding:** The fixtures can be migrated to an alternate endpoint or sql file for a cleaner main.go
+
+- **Extended database:** Enhance the database schemas and names for tracking and feature extension.
+
+There are, of course, several extensions to the current features that would add significant value and prepare this project for production. These include, but are not limited to:
+Frontend pages
+- Ability to onboard new users
+- Ability to update and manage existing users
+- Ability to onboard new wallets
+- Ability to update and manage existing wallets
+- Introduce other transaction types like refunds, chargebacks, etc.
+- Multi-currency support
 
 ## Reviewing the Project
 To effectively review this project, follow these steps:

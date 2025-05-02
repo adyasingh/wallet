@@ -44,7 +44,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n \"amount\": 10 \n}",
+					"raw": "{\n \"amount\": 10\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -75,7 +75,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"to_wallet_id\": 4000,\n    \"amount\": 50\n}",
+					"raw": "{\n    \"to_wallet_id\": 2,\n    \"amount\": 10\n}",
 					"options": {
 						"raw": {
 							"language": "json"

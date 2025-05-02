@@ -12,10 +12,11 @@ import (
 
 func TestWalletService_Deposit(t *testing.T) {
 	_, transactionRepo, walletRepo, userRepo := utils.SetupTestDB()
-
 	walletService := service.NewWalletServiceImpl(transactionRepo, walletRepo)
-	userID, _ := userRepo.Save(models.User{Name: "Test User"})
-	walletID, _ := walletRepo.Save(models.Wallet{Balance: 100.0, UserID: userID})
+	userID, err := userRepo.Save(models.User{Name: "Test User"})
+	assert.NoError(t, err)
+	walletID, err := walletRepo.Save(models.Wallet{Balance: 100.0, UserID: userID})
+	assert.NoError(t, err)
 
 	tests := []struct {
 		name              string
@@ -74,8 +75,10 @@ func TestWalletService_Deposit(t *testing.T) {
 func TestWalletService_Withdraw(t *testing.T) {
 	_, transactionRepo, walletRepo, userRepo := utils.SetupTestDB()
 	walletService := service.NewWalletServiceImpl(transactionRepo, walletRepo)
-	userID, _ := userRepo.Save(models.User{Name: "Test User"})
-	walletID, _ := walletRepo.Save(models.Wallet{Balance: 100.0, UserID: userID})
+	userID, err := userRepo.Save(models.User{Name: "Test User"})
+	assert.NoError(t, err)
+	walletID, err := walletRepo.Save(models.Wallet{Balance: 100.0, UserID: userID})
+	assert.NoError(t, err)
 
 	tests := []struct {
 		name              string
@@ -133,11 +136,15 @@ func TestWalletService_Withdraw(t *testing.T) {
 func TestWalletService_Transfer(t *testing.T) {
 	_, transactionRepo, walletRepo, userRepo := utils.SetupTestDB()
 	walletService := service.NewWalletServiceImpl(transactionRepo, walletRepo)
-	userID1, _ := userRepo.Save(models.User{Name: "User 1"})
-	walletID1, _ := walletRepo.Save(models.Wallet{Balance: 100.0, UserID: userID1})
+	userID1, err := userRepo.Save(models.User{Name: "User 1"})
+	assert.NoError(t, err)
+	walletID1, err := walletRepo.Save(models.Wallet{Balance: 100.0, UserID: userID1})
+	assert.NoError(t, err)
 
-	userID2, _ := userRepo.Save(models.User{Name: "User 2"})
-	walletID2, _ := walletRepo.Save(models.Wallet{Balance: 100.0, UserID: userID2})
+	userID2, err := userRepo.Save(models.User{Name: "User 2"})
+	assert.NoError(t, err)
+	walletID2, err := walletRepo.Save(models.Wallet{Balance: 100.0, UserID: userID2})
+	assert.NoError(t, err)
 
 	tests := []struct {
 		name           string

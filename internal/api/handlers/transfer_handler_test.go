@@ -16,53 +16,69 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestDepositHandler(t *testing.T) {
+func TestTransferHandler(t *testing.T) {
 	_, transactionRepo, walletRepo, userRepo := utils.SetupTestDB()
-
 	walletService := service.NewWalletServiceImpl(transactionRepo, walletRepo)
 	walletHandler := handlers.NewWalletHandler(walletService)
 
 	r := gin.Default()
-	r.POST("/wallet/:id/deposit", walletHandler.DepositHandler)
+	r.POST("/wallet/:id/transfer", walletHandler.TransferHandler)
 
-	userID, err := userRepo.Save(models.User{Name: "Test User"})
+	userID1, err := userRepo.Save(models.User{Name: "Test User"})
+	assert.NoError(t, err)
+	userID2, err := userRepo.Save(models.User{Name: "Test User2"})
 	assert.NoError(t, err)
 
-	walletID, err := walletRepo.Save(models.Wallet{Balance: 100.0, UserID: userID})
+	walletID1, err := walletRepo.Save(models.Wallet{Balance: 100.0, UserID: userID1})
+	assert.NoError(t, err)
+	walletID2, err := walletRepo.Save(models.Wallet{Balance: 100.0, UserID: userID2})
 	assert.NoError(t, err)
 
 	tests := []struct {
 		name           string
 		walletID       string
-		depositAmount  float64
+		amount         float64
+		ToWalletId     uint
 		expectedStatus int
 		expectedBody   string
 	}{
 		{
-			name:           "Valid Deposit",
-			walletID:       strconv.Itoa(int(walletID)),
-			depositAmount:  50.0,
+			name:           "Valid Transfer",
+			walletID:       strconv.Itoa(int(walletID1)),
+			amount:         50.0,
+			ToWalletId:     walletID2,
 			expectedStatus: http.StatusOK,
-			expectedBody:   `{"message":"Deposit successful"}`,
+			expectedBody:   `{"message":"Transfer successful"}`,
 		},
 		{
 			name:           "Invalid Wallet ID",
 			walletID:       "invalid-id",
-			depositAmount:  50.0,
+			amount:         50.0,
+			ToWalletId:     walletID2,
 			expectedStatus: http.StatusBadRequest,
 			expectedBody:   `{"error":"invalid wallet id"}`,
 		},
 		{
-			name:           "Invalid Deposit Amount",
-			walletID:       strconv.Itoa(int(walletID)),
-			depositAmount:  -50.0,
+			name:           "Invalid Amount",
+			walletID:       strconv.Itoa(int(walletID1)),
+			amount:         -50.0,
+			ToWalletId:     walletID2,
 			expectedStatus: http.StatusBadRequest,
 			expectedBody:   `{"error":"amount must be greater than zero"}`,
 		},
 		{
-			name:           "Non-existent Wallet",
+			name:           "Non-existent outgoing wallet",
 			walletID:       "999",
-			depositAmount:  50.0,
+			amount:         50.0,
+			ToWalletId:     walletID2,
+			expectedStatus: http.StatusNotFound,
+			expectedBody:   `{"error":"resource not found"}`,
+		},
+		{
+			name:           "Non-existent incoming wallet",
+			walletID:       strconv.Itoa(int(walletID1)),
+			ToWalletId:     999,
+			amount:         50.0,
 			expectedStatus: http.StatusNotFound,
 			expectedBody:   `{"error":"resource not found"}`,
 		},
@@ -70,13 +86,15 @@ func TestDepositHandler(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			body := gin.H{"amount": tt.depositAmount}
+			body := gin.H{"amount": tt.amount, "to_wallet_id": tt.ToWalletId}
 			jsonBody, err := json.Marshal(body)
 			assert.NoError(t, err)
-			req, err := http.NewRequest(http.MethodPost, "/wallet/"+tt.walletID+"/deposit", bytes.NewBuffer(jsonBody))
+			req, err := http.NewRequest(http.MethodPost, "/wallet/"+tt.walletID+"/transfer", bytes.NewBuffer(jsonBody))
 			assert.NoError(t, err)
 			resp := httptest.NewRecorder()
+
 			r.ServeHTTP(resp, req)
+
 			assert.Equal(t, tt.expectedStatus, resp.Code)
 			assert.JSONEq(t, tt.expectedBody, resp.Body.String())
 		})

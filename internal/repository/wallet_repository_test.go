@@ -11,7 +11,8 @@ import (
 func TestWalletRepository_Save(t *testing.T) {
 	db, _, walletRepo, userRepo := utils.SetupTestDB()
 	user := models.User{Name: "Test User"}
-	id, _ := userRepo.Save(user)
+	id, err := userRepo.Save(user)
+	assert.NoError(t, err)
 	wallet := models.Wallet{Balance: 100.0, UserID: id}
 	walletID, err := walletRepo.Save(wallet)
 
@@ -26,12 +27,12 @@ func TestWalletRepository_Save(t *testing.T) {
 func TestWalletRepository_FindByID(t *testing.T) {
 	_, _, walletRepo, userRepo := utils.SetupTestDB()
 	user := models.User{Name: "Test User"}
-	id, _ := userRepo.Save(user)
+	id, err := userRepo.Save(user)
+	assert.NoError(t, err)
 	wallet := models.Wallet{Balance: 100.0, UserID: id}
-	walletID, _ := walletRepo.Save(wallet)
-
+	walletID, err := walletRepo.Save(wallet)
+	assert.NoError(t, err)
 	foundWallet, err := walletRepo.FindByID(walletID)
-
 	assert.NoError(t, err)
 	assert.Equal(t, wallet.Balance, foundWallet.Balance)
 	assert.Equal(t, wallet.UserID, foundWallet.UserID)
@@ -40,15 +41,14 @@ func TestWalletRepository_FindByID(t *testing.T) {
 func TestWalletRepository_UpdateBalance(t *testing.T) {
 	_, _, walletRepo, userRepo := utils.SetupTestDB()
 	user := models.User{Name: "Test User"}
-	id, _ := userRepo.Save(user)
-	wallet := models.Wallet{Balance: 100.0, UserID: id}
-	walletID, _ := walletRepo.Save(wallet)
-
-	newBalance := 300.0
-	err := walletRepo.UpdateBalance(walletID, newBalance)
-
+	id, err := userRepo.Save(user)
 	assert.NoError(t, err)
-
+	wallet := models.Wallet{Balance: 100.0, UserID: id}
+	walletID, err := walletRepo.Save(wallet)
+	assert.NoError(t, err)
+	newBalance := 300.0
+	err = walletRepo.UpdateBalance(walletID, newBalance)
+	assert.NoError(t, err)
 	updatedWallet, err := walletRepo.FindByID(walletID)
 	assert.NoError(t, err)
 	assert.Equal(t, newBalance, updatedWallet.Balance)

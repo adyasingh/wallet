@@ -23,8 +23,10 @@ func TestWithdrawalHandler(t *testing.T) {
 	r := gin.Default()
 	r.POST("/wallet/:id/withdraw", walletHandler.WithdrawalHandler)
 
-	userID, _ := userRepo.Save(models.User{Name: "Test User"})
-	walletID, _ := walletRepo.Save(models.Wallet{Balance: 100.0, UserID: userID})
+	userID, err := userRepo.Save(models.User{Name: "Test User"})
+	assert.NoError(t, err)
+	walletID, err := walletRepo.Save(models.Wallet{Balance: 100.0, UserID: userID})
+	assert.NoError(t, err)
 
 	tests := []struct {
 		name             string
@@ -73,8 +75,10 @@ func TestWithdrawalHandler(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			body := gin.H{"amount": tt.withdrawalAmount}
-			jsonBody, _ := json.Marshal(body)
-			req, _ := http.NewRequest(http.MethodPost, "/wallet/"+tt.walletID+"/withdraw", bytes.NewBuffer(jsonBody))
+			jsonBody, err := json.Marshal(body)
+			assert.NoError(t, err)
+			req, err := http.NewRequest(http.MethodPost, "/wallet/"+tt.walletID+"/withdraw", bytes.NewBuffer(jsonBody))
+			assert.NoError(t, err)
 			resp := httptest.NewRecorder()
 
 			r.ServeHTTP(resp, req)
