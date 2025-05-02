@@ -2,6 +2,7 @@ package utils
 
 import (
 	"log"
+	"os"
 	"wallet-app/config"
 	"wallet-app/internal/models"
 	"wallet-app/internal/repository"
@@ -9,12 +10,12 @@ import (
 	"gorm.io/gorm"
 )
 
-var db *gorm.DB
-
 func SetupTestDB() (*gorm.DB, *repository.TransactionRepositoryImpl, *repository.WalletRepositoryImpl, *repository.UserRepositoryImpl) {
-	var err error
-	databaseURL := "host=localhost port=5433 user=postgres password=postgres dbname=postgres sslmode=disable"
-	db, err = config.DatabaseConnection(databaseURL)
+	databaseURL := os.Getenv("TEST_DATABASE_URL")
+	if databaseURL == "" {
+		log.Fatal("TEST_DATABASE_URL is not set")
+	}
+	db, err := config.DatabaseConnection(databaseURL)
 	if err != nil {
 		panic("failed to connect to the test database")
 	}

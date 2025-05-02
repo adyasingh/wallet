@@ -43,7 +43,7 @@ To call the APIs, import the Postman collection, which includes the following en
 
 ## Testing
 
-To run the tests, you can exec into the application container. This application utilizes a test database to conduct comprehensive tests.
+To run the tests, you can exec into the application container. This application utilizes a test database to conduct comprehensive tests. While some projects may utilize database mocking, I have always found it more useful and robust to test the service using a real test database.
 
 Approximately one-third of the project development time was dedicated to writing these tests, ensuring robust functionality and reliability.
 
